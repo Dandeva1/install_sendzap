@@ -193,14 +193,14 @@ EOF
 
   sleep 2
 
-  backend_hostname=$(echo "${backend_url/https:\/\/}")
+  backend_hostname=$(echo "${alter_backend_url/https:\/\/}")
 
 sudo su - root << EOF
 cat > /etc/nginx/sites-available/${empresa_dominio}-backend << 'END'
 server {
   server_name $backend_hostname;
   location / {
-    proxy_pass http://127.0.0.1:${backend_port};
+    proxy_pass http://127.0.0.1:${alter_backend_port};
     proxy_http_version 1.1;
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection 'upgrade';
@@ -214,6 +214,46 @@ server {
 END
 ln -s /etc/nginx/sites-available/${empresa_dominio}-backend /etc/nginx/sites-enabled
 
+sleep 2
+
+  frontend_hostname=$(echo "${alter_frontend_url/https:\/\/}")
+
+sudo su - root << EOF
+cat > /etc/nginx/sites-available/${empresa_dominio}-frontend << 'END'
+server {
+  server_name $frontend_hostname;
+  location / {
+    proxy_pass http://127.0.0.1:${frontend_port};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_cache_bypass \$http_upgrade;
+  }
+}
+END
+ln -s /etc/nginx/sites-available/${empresa_dominio}-frontend /etc/nginx/sites-enabled
+
+  sleep 2
+
+  service nginx restart
+  
+  sleep 2
+
+  backend_domain=$(echo "${alter_backend_url/https:\/\/}")
+  frontend_domain=$(echo "${alter_frontend_url/https:\/\/}")
+
+  sudo su - root <<EOF
+  certbot -m $deploy_email \
+          --nginx \
+          --agree-tos \
+          --non-interactive \
+          --domains $backend_domain,$frontend_domain
+EOF
+
   sleep 2
 
   print_banner
@@ -222,7 +262,6 @@ ln -s /etc/nginx/sites-available/${empresa_dominio}-backend /etc/nginx/sites-ena
 
   sleep 2
 }
-
 
 #######################################
 # installs node

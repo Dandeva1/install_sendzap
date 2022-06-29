@@ -101,6 +101,92 @@ EOF
 
   sleep 2
 
+  print_banner
+  printf "${WHITE} 💻 Remoção da Instancia/Empresa ${empresa_delete} realizado com sucesso ...${GRAY_LIGHT}"
+  printf "\n\n"
+
+
+  sleep 2
+
+}
+
+#######################################
+# bloquear system
+# Arguments:
+#   None
+#######################################
+configurar_bloqueio() {
+  print_banner
+  printf "${WHITE} 💻 Vamos bloquear o Whaticket...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
+
+sudo su - deploy <<EOF
+ pm2 stop ${empresa_bloquear}-backend
+ pm2 save
+EOF
+
+  sleep 2
+
+  print_banner
+  printf "${WHITE} 💻 Bloqueio da Instancia/Empresa ${empresa_bloquear} realizado com sucesso ...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
+}
+
+
+#######################################
+# desbloquear system
+# Arguments:
+#   None
+#######################################
+configurar_desbloqueio() {
+  print_banner
+  printf "${WHITE} 💻 Vamos Desbloquear o Whaticket...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
+
+sudo su - deploy <<EOF
+ pm2 start ${empresa_bloquear}-backend
+ pm2 save
+EOF
+
+  sleep 2
+
+  print_banner
+  printf "${WHITE} 💻 Desbloqueio da Instancia/Empresa ${empresa_desbloquear} realizado com sucesso ...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
+}
+
+#######################################
+# alter dominio system
+# Arguments:
+#   None
+#######################################
+configurar_dominio() {
+  print_banner
+  printf "${WHITE} 💻 Vamos Alterar os Dominios do Whaticket...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
+
+sudo su - deploy <<EOF
+ pm2 start ${empresa_dominio}-backend
+ pm2 save
+EOF
+
+  sleep 2
+
+  print_banner
+  printf "${WHITE} 💻 Alteração do Dominios da Instancia/Empresa ${empresa_dominio} realizado com sucesso ...${GRAY_LIGHT}"
+  printf "\n\n"
+
+  sleep 2
 }
 
 

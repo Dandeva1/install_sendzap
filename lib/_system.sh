@@ -175,9 +175,19 @@ configurar_dominio() {
 
   sleep 2
 
+sudo su - root <<EOF
+  cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-frontend
+  cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-backend  
+  cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-frontend
+  cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-backend
+  
+  sleep 2
+
 sudo su - deploy <<EOF
  pm2 start ${empresa_dominio}-backend
  pm2 save
+ echo "CASO NÃO TENHA SETADO UMA SENHA DURANTE A INSTALAÇÃO, UTILIZE A SENHA ROOT PADRÃO PARA O MYSQL = ${senha}" > senhapadrao.txt
+ sed -i "/^PORT/s/.*/PORT=$porta/" .env
 EOF
 
   sleep 2

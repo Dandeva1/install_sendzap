@@ -184,9 +184,9 @@ sudo su - root <<EOF
   sleep 2
 
 sudo su - deploy <<EOF
- cd && cd /home/deploy/${empresa_dominio}/frontend
+ cd && cd /home/owenzap/${empresa_dominio}/frontend
  sed -i "1c\REACT_APP_BACKEND_URL=https://${alter_frontend_url}" .env
- cd && cd /home/deploy/${empresa_dominio}/backend
+ cd && cd /home/owenzap/${empresa_dominio}/backend
  sed -i "2c\BACKEND_URL=https://${alter_backend_url}" .env
  sed -i "3c\FRONTEND_URL=https://${alter_frontend_url}" .env 
 EOF
@@ -223,7 +223,7 @@ cat > /etc/nginx/sites-available/${empresa_dominio}-frontend << 'END'
 server {
   server_name $frontend_hostname;
   location / {
-    proxy_pass http://127.0.0.1:${frontend_port};
+    proxy_pass http://127.0.0.1:${alter_frontend_port};
     proxy_http_version 1.1;
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection 'upgrade';

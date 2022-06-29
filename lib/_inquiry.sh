@@ -137,6 +137,23 @@ get_alter_backend_url() {
   read -p "> " alter_backend_url
 }
 
+get_alter_frontend_port() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite a porta do FRONTEND da Instancia/Empresa ${empresa_dominio}; A porta deve ser o mesma informada durante a instalação ${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " alter_frontend_port
+}
+
+
+get_alter_backend_port() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite a porta do BACKEND da Instancia/Empresa ${empresa_dominio}; A porta deve ser o mesma informada durante a instalação ${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " alter_backend_port
+}
+
 
 get_urls() {
   get_mysql_root_password
@@ -176,6 +193,8 @@ software_dominio() {
   get_empresa_dominio
   get_alter_frontend_url
   get_alter_backend_url
+  get_alter_frontend_port
+  get_alter_backend_port
   configurar_dominio
 }
 

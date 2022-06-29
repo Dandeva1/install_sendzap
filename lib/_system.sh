@@ -183,7 +183,7 @@ sudo su - root <<EOF
   
   sleep 2
 
-sudo su - deploy <<EOF
+sudo su - owenzap <<EOF
  cd && cd /home/owenzap/${empresa_dominio}/frontend
  sed -i "1c\REACT_APP_BACKEND_URL=https://${alter_frontend_url}" .env
  cd && cd /home/owenzap/${empresa_dominio}/backend

@@ -121,6 +121,22 @@ get_empresa_dominio() {
   read -p "> " empresa_dominio
 }
 
+get_alter_frontend_url() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite o NOVO domínio do FRONTEND/PAINEL para a ${empresa_dominio}:${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " alter_frontend_url
+}
+
+get_alter_backend_url() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite o NOVO domínio do BACKEND/API para a ${empresa_dominio}:${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " alter_backend_url
+}
+
 
 get_urls() {
   get_mysql_root_password
@@ -158,6 +174,8 @@ software_desbloquear() {
 
 software_dominio() {
   get_empresa_dominio
+  get_alter_frontend_url
+  get_alter_backend_url
   configurar_dominio
 }
 

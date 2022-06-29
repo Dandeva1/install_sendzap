@@ -173,30 +173,31 @@ configurar_dominio() {
   printf "${WHITE} 💻 Vamos Alterar os Dominios do Whaticket...${GRAY_LIGHT}"
   printf "\n\n"
 
-  sleep 2
+sleep 2
 
-sudo su - root <<EOF
+  sudo su - root <<EOF
   cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-frontend
   cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-backend  
   cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-frontend
   cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-backend
-  
-  sleep 2
-
-sudo su - owenzap <<EOF
- cd && cd /home/owenzap/${empresa_dominio}/frontend
- sed -i "1c\REACT_APP_BACKEND_URL=https://${alter_frontend_url}" .env
- cd && cd /home/owenzap/${empresa_dominio}/backend
- sed -i "2c\BACKEND_URL=https://${alter_backend_url}" .env
- sed -i "3c\FRONTEND_URL=https://${alter_frontend_url}" .env 
 EOF
 
-  sleep 2
+sleep 2
 
-  backend_hostname=$(echo "${alter_backend_url/https:\/\/}")
+  sudo su - owenzap <<EOF
+  cd && cd /home/owenzap/${empresa_dominio}/frontend
+  sed -i "1c\REACT_APP_BACKEND_URL=https://${alter_frontend_url}" .env
+  cd && cd /home/owenzap/${empresa_dominio}/backend
+  sed -i "2c\BACKEND_URL=https://${alter_backend_url}" .env
+  sed -i "3c\FRONTEND_URL=https://${alter_frontend_url}" .env 
+EOF
 
-sudo su - root << EOF
-cat > /etc/nginx/sites-available/${empresa_dominio}-backend << 'END'
+sleep 2
+   
+   backend_hostname=$(echo "${alter_backend_url/https:\/\/}")
+
+ sudo su - root <<EOF
+  cat > /etc/nginx/sites-available/${empresa_dominio}-backend << 'END'
 server {
   server_name $backend_hostname;
   location / {
@@ -213,10 +214,11 @@ server {
 }
 END
 ln -s /etc/nginx/sites-available/${empresa_dominio}-backend /etc/nginx/sites-enabled
+EOF
 
 sleep 2
 
-  frontend_hostname=$(echo "${alter_frontend_url/https:\/\/}")
+frontend_hostname=$(echo "${alter_frontend_url/https:\/\/}")
 
 sudo su - root << EOF
 cat > /etc/nginx/sites-available/${empresa_dominio}-frontend << 'END'
@@ -236,15 +238,18 @@ server {
 }
 END
 ln -s /etc/nginx/sites-available/${empresa_dominio}-frontend /etc/nginx/sites-enabled
+EOF
 
-  sleep 2
+ sleep 2
 
+ sudo su - root <<EOF
   service nginx restart
-  
+EOF
+
   sleep 2
 
-  backend_domain=$(echo "${alter_backend_url/https:\/\/}")
-  frontend_domain=$(echo "${alter_frontend_url/https:\/\/}")
+  backend_domain=$(echo "${backend_url/https:\/\/}")
+  frontend_domain=$(echo "${frontend_url/https:\/\/}")
 
   sudo su - root <<EOF
   certbot -m $deploy_email \
@@ -257,7 +262,7 @@ EOF
   sleep 2
 
   print_banner
-  printf "${WHITE} 💻 Alteração do Dominios da Instancia/Empresa ${empresa_dominio} realizado com sucesso ...${GRAY_LIGHT}"
+  printf "${WHITE} 💻 Alteração de dominio da Instancia/Empresa ${empresa_dominio} realizado com sucesso ...${GRAY_LIGHT}"
   printf "\n\n"
 
   sleep 2

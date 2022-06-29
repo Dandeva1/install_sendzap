@@ -175,21 +175,44 @@ configurar_dominio() {
 
   sleep 2
 
-#sudo su - root <<EOF
-  #cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-frontend
-  #cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-backend  
-  #cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-frontend
-  #cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-backend
+sudo su - root <<EOF
+  cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-frontend
+  cd && rm -rf /etc/nginx/sites-enabled/${empresa_dominio}-backend  
+  cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-frontend
+  cd && rm -rf /etc/nginx/sites-available/${empresa_dominio}-backend
   
-  #sleep 2
+  sleep 2
 
 sudo su - deploy <<EOF
- #pm2 start ${empresa_dominio}-backend
- #pm2 save
- #echo "CASO NÃO TENHA SETADO UMA SENHA DURANTE A INSTALAÇÃO, UTILIZE A SENHA ROOT PADRÃO PARA O MYSQL = ${senha}" > senhapadrao.txt
- cd /home/deploy/${empresa_dominio}/frontend
- sed -i "/^REACT_APP_BACKEND_URL/s/.*/REACT_APP_BACKEND_URL=https://apidemo1.owenzap.com/" .env
+ cd && cd /home/deploy/${empresa_dominio}/frontend
+ sed -i "1c\REACT_APP_BACKEND_URL=https://${alter_frontend_url}" .env
+ cd && cd /home/deploy/${empresa_dominio}/backend
+ sed -i "2c\BACKEND_URL=https://${alter_backend_url}" .env
+ sed -i "3c\FRONTEND_URL=https://${alter_frontend_url}" .env 
 EOF
+
+  sleep 2
+
+  backend_hostname=$(echo "${backend_url/https:\/\/}")
+
+sudo su - root << EOF
+cat > /etc/nginx/sites-available/${empresa_dominio}-backend << 'END'
+server {
+  server_name $backend_hostname;
+  location / {
+    proxy_pass http://127.0.0.1:${backend_port};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_cache_bypass \$http_upgrade;
+  }
+}
+END
+ln -s /etc/nginx/sites-available/${empresa_dominio}-backend /etc/nginx/sites-enabled
 
   sleep 2
 

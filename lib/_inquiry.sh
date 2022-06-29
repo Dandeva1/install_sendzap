@@ -122,29 +122,59 @@ software_delete() {
   deletar_tudo
 }
 
+software_bloquear() {
+  get_empresa_bloquear
+  deletar_tudo
+}
+
+software_desbloquear() {
+  get_empresa_desbloquear
+  deletar_tudo
+}
+
+software_dominio() {
+  get_empresa_dominio
+  deletar_tudo
+}
+
 inquiry_options() {
   
   print_banner
   printf "${WHITE} 💻 Bem vindo(a) ao Gerenciador Whaticket, Selecione abaixo a proxima ação!${GRAY_LIGHT}"
   printf "\n\n"
-  printf "   [1] Instalar whaticket\n"
-  printf "   [2] Atualizar whaticket\n"
-  printf "   [3] Deletar Whaticket\n"
+  printf "   [0] Instalar whaticket\n"
+  printf "   [1] Atualizar whaticket\n"
+  printf "   [2] Deletar Whaticket\n"
+  printf "   [3] Bloquear Whaticket\n"
+  printf "   [4] Desbloquear Whaticket\n"
+  printf "   [5] Alter. dominio Whaticket\n"
   printf "\n"
   read -p "> " option
 
   case "${option}" in
-    1) get_urls ;;
+    0) get_urls ;;
 
-    2) 
+    1) 
       software_update 
       exit
       ;;
 
-    3) 
+    2) 
       software_delete 
       exit
-      ;;  
+      ;;
+    3) 
+      software_bloquear 
+      exit
+      ;;
+    4) 
+      software_desbloquear 
+      exit
+      ;;
+    5) 
+      software_dominio 
+      exit
+      ;;        
 
     *) exit ;;
   esac

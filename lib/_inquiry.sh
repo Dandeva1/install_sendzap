@@ -97,6 +97,30 @@ get_empresa_atualizar() {
   read -p "> " empresa_atualizar
 }
 
+get_empresa_bloquear() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite o nome da Instancia/Empresa que deseja Bloquear (Digite o mesmo nome de quando instalou):${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " empresa_bloquear
+}
+
+get_empresa_desbloquear() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite o nome da Instancia/Empresa que deseja Desbloquear (Digite o mesmo nome de quando instalou):${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " empresa_desbloquear
+}
+
+get_empresa_dominio() {
+  
+  print_banner
+  printf "${WHITE} 💻 Digite o nome da Instancia/Empresa que deseja Alterar os Dominios (Atenção para alterar os dominios precisa digitar os 2, mesmo que vá alterar apenas 1):${GRAY_LIGHT}"
+  printf "\n\n"
+  read -p "> " empresa_dominio
+}
+
 
 get_urls() {
   get_mysql_root_password
@@ -124,17 +148,17 @@ software_delete() {
 
 software_bloquear() {
   get_empresa_bloquear
-  deletar_tudo
+  configurar_bloqueio
 }
 
 software_desbloquear() {
   get_empresa_desbloquear
-  deletar_tudo
+  configurar_desbloqueio
 }
 
 software_dominio() {
   get_empresa_dominio
-  deletar_tudo
+  configurar_dominio
 }
 
 inquiry_options() {
